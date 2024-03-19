@@ -15,11 +15,14 @@ def main(timeframe):
         )
     else:
         cursor.execute(
-            "SELECT DEVICE, COUNT(*) FROM GREENHOUSE_DATA GROUP BY DEVICE", ()
+            "SELECT DEVICE, COUNT(*) FROM GREENHOUSE_DATA GROUP BY DEVICE",
         )
 
     for group in cursor.fetchall():
         print(f"{group[1]} for device {group[0]}")
+
+    cursor.execute("SELECT COUNT (*) FROM GREENHOUSE_DATA")
+    print(f"\nTotal Records: {cursor.fetchone()[0]}")
 
 
 if __name__ == "__main__":
@@ -29,13 +32,13 @@ if __name__ == "__main__":
         "--timeframe",
         type=str,
         help="The data timeframe: hourly, daily weekly.",
-        default="hourly",
+        default="none",
     )
 
     args = parser.parse_args()
 
     match args.timeframe.lower():
-        case None:
+        case "none":
             timeframe = None
         case "hourly":
             timeframe = 3600
